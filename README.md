@@ -1,4 +1,4 @@
-# Proyecto Final: Lista de Tareas
+# Proyecto Final: Lista de tareas 
 
 Este proyecto es una aplicación web interactiva que permite a los usuarios gestionar sus objetivos y tareas diarias. La aplicación permite agregar objetivos, tareas con diferentes niveles de prioridad, y registrar el tiempo dedicado a cada tarea.
 
