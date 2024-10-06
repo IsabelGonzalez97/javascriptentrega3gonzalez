@@ -16,7 +16,15 @@ body {
 }
 
 h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3em;
     text-align: center;
+    color: #00796b; /* Color verde oscuro */
+}
+h3 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.5em;
+    text-align: left;
     color: #00796b; /* Color verde oscuro */
 }
 
