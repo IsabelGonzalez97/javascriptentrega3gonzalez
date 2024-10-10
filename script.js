@@ -1,170 +1,152 @@
-// Añadir evento al botón de agregar objetivo
-document.getElementById("addObjective").addEventListener("click", addObjective);
-
-// Arreglo para almacenar los objetivos
+// Variables globales
 let objectives = [];
+let taskIdCounter = 0;
 
-// Cargar datos desde data.json al inicio
-function loadObjectives() {
-    fetch('data.json')
-        .then(response => response.json())
-        .then(data => {
-            objectives = data.objectives; // Cargar objetivos del JSON
-            renderObjectives(); // Renderizar la lista de objetivos
-        })
-        .catch(error => console.error('Error al cargar JSON:', error)); // Manejar errores
+// Crear una clase para los objetivos
+class Objective {
+    constructor(name) {
+        this.name = name;
+        this.tasks = [];
+    }
+
+    addTask(task) {
+        this.tasks.push(task);
+    }
+
+    getSummary() {
+        const completedTasks = this.tasks.filter(task => task.completed).length;
+        const pendingTasks = this.tasks.length - completedTasks;
+        const totalTimeSpent = this.tasks.reduce((acc, task) => acc + task.timeSpent, 0);
+        return { completedTasks, pendingTasks, totalTimeSpent };
+    }
 }
 
-// Guardar objetivos en LocalStorage
-function saveObjectives() {
-    localStorage.setItem("objectives", JSON.stringify(objectives)); // Convertir a JSON
+// Crear una clase para las tareas
+class Task {
+    constructor(name, priority) {
+        this.name = name;
+        this.priority = priority;
+        this.completed = false;
+        this.startTime = null;
+        this.timeSpent = 0;
+    }
+
+    start() {
+        this.startTime = Date.now();
+    }
+
+    confirm() {
+        if (this.startTime) {
+            this.timeSpent = Math.floor((Date.now() - this.startTime) / 60000); // Convertir a minutos
+            this.completed = true;
+        }
+    }
 }
 
-// Renderizar los objetivos y tareas en el DOM
+// Función para crear un nuevo objetivo
+function createObjective(name) {
+    const newObjective = new Objective(name);
+    objectives.push(newObjective);
+    renderObjectives();
+}
+
+// Función para crear una nueva tarea
+function createTask(objectiveIndex, taskName, priority) {
+    const task = new Task(taskName, priority);
+    objectives[objectiveIndex].addTask(task);
+    renderObjectives();
+}
+
+// Función para iniciar una tarea
+function startTask(objectiveIndex, taskIndex) {
+    objectives[objectiveIndex].tasks[taskIndex].start();
+    renderObjectives();
+}
+
+// Función para confirmar una tarea y calcular el tiempo
+function confirmTask(objectiveIndex, taskIndex) {
+    objectives[objectiveIndex].tasks[taskIndex].confirm();
+    renderObjectives();
+    Swal.fire('¡Tarea Completada!', `Tiempo invertido: ${objectives[objectiveIndex].tasks[taskIndex].timeSpent} minutos.`, 'success');
+}
+
+// Función para eliminar una tarea
+function deleteTask(objectiveIndex, taskIndex) {
+    objectives[objectiveIndex].tasks.splice(taskIndex, 1);
+    renderObjectives();
+}
+
+// Función para mostrar el resumen del objetivo
+function showSummary(objectiveIndex) {
+    const summary = objectives[objectiveIndex].getSummary();
+    Swal.fire(
+        'Resumen del Objetivo',
+        `Tareas completadas: ${summary.completedTasks}\nTareas pendientes: ${summary.pendingTasks}\nTiempo total invertido: ${summary.totalTimeSpent} minutos.`,
+        'info'
+    );
+}
+
+// Renderizar los objetivos y las tareas
 function renderObjectives() {
-    const container = document.getElementById("objectivesContainer");
-    container.innerHTML = ""; // Limpiar el contenedor antes de renderizar
+    const objectivesContainer = document.getElementById('objectives-container');
+    objectivesContainer.innerHTML = ''; // Limpiar contenido
 
-    // Iterar sobre cada objetivo
     objectives.forEach((objective, objectiveIndex) => {
-        const objectiveDiv = document.createElement("div");
-        objectiveDiv.className = "objective";
-        objectiveDiv.innerHTML = `<h3>${objective.text}</h3>`;
-        
-        // Crear input para agregar tareas y seleccionar prioridad
-        const taskInput = document.createElement("input");
-        taskInput.placeholder = "Agregar tarea...";
-        const prioritySelect = document.createElement("select");
-        prioritySelect.innerHTML = `
-            <option value="">Prioridad</option>
-            <option value="urgent">Urgente</option>
-            <option value="medium">Medio</option>
-            <option value="low">Bajo</option>
+        const objectiveDiv = document.createElement('div');
+        objectiveDiv.classList.add('objective');
+
+        // Título del objetivo
+        const title = document.createElement('h3');
+        title.textContent = objective.name;
+        objectiveDiv.appendChild(title);
+
+        // Botón para agregar tareas
+        const taskForm = document.createElement('div');
+        taskForm.innerHTML = `
+            <input type="text" placeholder="Nombre de la tarea" id="task-name-${objectiveIndex}">
+            <select id="task-priority-${objectiveIndex}">
+                <option value="Alta">Alta</option>
+                <option value="Media">Media</option>
+                <option value="Baja">Baja</option>
+            </select>
+            <button onclick="createTask(${objectiveIndex}, document.getElementById('task-name-${objectiveIndex}').value, document.getElementById('task-priority-${objectiveIndex}').value)">Agregar Tarea</button>
         `;
-        const addTaskButton = document.createElement("button");
-        addTaskButton.innerText = "Agregar Tarea";
-        
-        // Evento para agregar tarea
-        addTaskButton.addEventListener("click", () => {
-            const taskText = taskInput.value.trim();
-            const priority = prioritySelect.value;
+        objectiveDiv.appendChild(taskForm);
 
-            if (taskText && priority) {
-                const task = { text: taskText, completed: false, priority, timeSpent: 0 };
-                objectives[objectiveIndex].tasks.push(task); // Agregar tarea al objetivo
-                taskInput.value = ""; // Limpiar el input
-                saveObjectives(); // Guardar cambios
-                renderObjectives(); // Volver a renderizar
-            }
-        });
-
-        objectiveDiv.appendChild(taskInput);
-        objectiveDiv.appendChild(prioritySelect);
-        objectiveDiv.appendChild(addTaskButton);
-        
-        const taskList = document.createElement("div");
-        
-        // Renderizar tareas del objetivo
+        // Lista de tareas
         objective.tasks.forEach((task, taskIndex) => {
-            const taskDiv = document.createElement("div");
-            taskDiv.className = `task ${task.priority}`;
+            const taskDiv = document.createElement('div');
+            taskDiv.classList.add('task');
+
+            // Colorear según prioridad
+            taskDiv.style.backgroundColor = task.priority === 'Alta' ? 'red' : task.priority === 'Media' ? 'yellow' : 'lightgreen';
+
+            // Información de la tarea
             taskDiv.innerHTML = `
-                <span class="${task.completed ? 'completed' : ''}">${task.text}</span>
-                <button class="complete">✔</button>
-                <button class="delete">❌</button>
+                <span>${task.name} - Prioridad: ${task.priority}</span>
+                <button onclick="startTask(${objectiveIndex}, ${taskIndex})">${task.startTime ? 'En progreso...' : 'Iniciar'}</button>
+                <button onclick="confirmTask(${objectiveIndex}, ${taskIndex})" ${task.completed ? 'disabled' : ''}>Confirmar</button>
+                <button onclick="deleteTask(${objectiveIndex}, ${taskIndex})">Eliminar</button>
+                ${task.completed ? `<span>Tiempo invertido: ${task.timeSpent} minutos</span>` : ''}
             `;
-            
-            // Evento para completar tarea
-            taskDiv.querySelector(".complete").addEventListener("click", () => {
-                const timeTaken = prompt("¿Cuánto tiempo tomaste para completar esta tarea en minutos?");
-                if (timeTaken) {
-                    task.completed = true; // Marcar tarea como completada
-                    task.timeSpent = parseInt(timeTaken, 10); // Registrar tiempo
-                    alert(`Tiempo registrado: ${timeTaken} minutos`);
-                    saveObjectives(); // Guardar cambios
-                    renderObjectives(); // Volver a renderizar
-                }
-            });
-
-            // Evento para eliminar tarea
-            taskDiv.querySelector(".delete").addEventListener("click", () => {
-                objectives[objectiveIndex].tasks.splice(taskIndex, 1); // Eliminar tarea
-                saveObjectives(); // Guardar cambios
-                renderObjectives(); // Volver a renderizar
-            });
-
-            taskList.appendChild(taskDiv); // Agregar tarea a la lista
+            objectiveDiv.appendChild(taskDiv);
         });
-        
-        objectiveDiv.appendChild(taskList);
-        
-        // Botón de resumen para cada objetivo
-        const summaryButton = document.createElement("button");
-        summaryButton.innerText = "Mostrar Resumen";
-        summaryButton.addEventListener("click", () => {
-            showSummary(objective); // Mostrar resumen del objetivo
-        });
-        
+
+        // Botón para mostrar el resumen
+        const summaryButton = document.createElement('button');
+        summaryButton.textContent = 'Mostrar Resumen';
+        summaryButton.onclick = () => showSummary(objectiveIndex);
         objectiveDiv.appendChild(summaryButton);
-        container.appendChild(objectiveDiv); // Agregar objetivo al contenedor
+
+        objectivesContainer.appendChild(objectiveDiv);
     });
-
-    displayMotivationalMessage(); // Mostrar mensaje motivacional si es necesario
 }
 
-// Mostrar resumen de tareas completadas y pendientes
-function showSummary(objective) {
-    const completedTasks = _.filter(objective.tasks, { completed: true });
-    const pendingTasks = _.filter(objective.tasks, { completed: false });
-    const totalTimeSpent = _.sumBy(completedTasks, 'timeSpent');
-
-    // Convertir minutos a horas y minutos
-    const hours = Math.floor(totalTimeSpent / 60);
-    const minutes = totalTimeSpent % 60;
-    
-    const summary = `
-        Objetivo: ${objective.text}
-        Tareas Completadas: ${completedTasks.length}
-        Tareas Pendientes: ${pendingTasks.length}
-        Tiempo Total Invertido: ${hours} horas y ${minutes} minutos
-    `;
-    
-    alert(summary.trim() || "No hay tareas para este objetivo."); // Mostrar resumen
-}
-
-
-// Agregar un nuevo objetivo
-function addObjective() {
-    const objectiveInput = document.getElementById("objectiveInput");
-    const objectiveText = objectiveInput.value.trim();
-
-    if (objectiveText) {
-        const newObjective = { text: objectiveText, tasks: [] }; // Crear nuevo objetivo
-        objectives.push(newObjective); // Agregar al arreglo de objetivos
-        objectiveInput.value = ""; // Limpiar input
-        saveObjectives(); // Guardar cambios
-        renderObjectives(); // Volver a renderizar
+// Evento para agregar un nuevo objetivo
+document.getElementById('add-objective').addEventListener('click', () => {
+    const objectiveName = document.getElementById('objective-name').value;
+    if (objectiveName) {
+        createObjective(objectiveName);
+        document.getElementById('objective-name').value = ''; // Limpiar campo
     }
-}
-
-// Mostrar mensaje motivacional si se han completado todos los objetivos
-function displayMotivationalMessage() {
-    // Comprobar si hay tareas en algún objetivo
-    const hasTasks = objectives.some(obj => obj.tasks.length > 0);
-    // Comprobar si todas las tareas están completadas
-    const allCompleted = objectives.every(obj => obj.tasks.every(task => task.completed));
-
-    const messageElement = document.getElementById("motivationalMessage");
-
-    // Solo mostrar mensaje si hay tareas y todas están completadas
-    if (hasTasks && allCompleted) {
-        messageElement.innerText = "¡Gran trabajo! Has completado todas tus tareas.";
-        messageElement.style.display = "block"; // Mostrar mensaje
-    } else {
-        messageElement.style.display = "none"; // Ocultar mensaje
-    }
-}
-
-// Cargar objetivos al iniciar
-loadObjectives();
-
+});

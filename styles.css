@@ -1,89 +1,42 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #e0f7fa; /* Color de fondo suave */
+    background-color: #f4f4f4;
     color: #333;
-    padding: 20px;
-    margin: 0;
 }
 
 .container {
-    max-width: 600px;
-    margin: auto;
-    background: #ffffff; /* Fondo blanco para el contenedor */
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
     padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    font-family: 'Great Vibes', cursive;
-    font-size: 3em;
+h1, h2 {
     text-align: center;
-    color: #00796b; /* Color verde oscuro */
-}
-h3 {
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-size: 1.5em;
-    text-align: left;
-    color: #00796b; /* Color verde oscuro */
-}
-
-input[type="text"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
 }
 
 button {
-    background-color: #00796b; /* Color verde oscuro */
-    color: white;
+    padding: 10px;
+    margin: 5px;
     border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
+    background-color: green;
+    color: white;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #004d40; /* Color verde más oscuro al pasar el mouse */
+button[disabled] {
+    background-color: gray;
 }
 
-.task {
-    margin: 5px 0;
+.objective, .task {
+    margin: 15px 0;
     padding: 10px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
 }
 
-.urgent {
-    background-color: #ffcccb; /* Rosa clarito */
-}
-
-.medium {
-    background-color: #ccffcc; /* Verde clarito */
-}
-
-.low {
-    background-color: #add8e6; /* Azul clarito */
-}
-
-.completed {
-    text-decoration: line-through;
-    color: #999; /* Color gris para tareas completadas */
-}
-
-.motivational-message {
-    display: none;
-    font-size: 1.2em;
-    color: #4caf50; /* Color verde motivacional */
-    text-align: center;
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #4caf50;
-    border-radius: 5px;
-    background-color: #e8f5e9; /* Fondo verde muy claro */
+.task span {
+    display: inline-block;
+    margin-right: 15px;
 }

@@ -3,20 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Tareas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <title>Simulador de Tareas</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Lista de Tareas del Día</h1>
-        <input type="text" id="objectiveInput" placeholder="Agregar objetivo...">
-        <button id="addObjective">Agregar Objetivo</button>
-        <div id="objectivesContainer"></div>
-        <div class="motivational-message" id="motivationalMessage"></div>
+        <h1>Simulador de Tareas</h1>
+        
+        <!-- Instrucciones -->
+        <div id="instructions">
+            <h2>Instrucciones</h2>
+            <p>1. Crear un objetivo.</p>
+            <p>2. Agregar tareas con prioridad a cada objetivo.</p>
+            <p>3. Iniciar y confirmar tareas para registrar el tiempo.</p>
+            <p>4. Mostrar el resumen del objetivo.</p>
+        </div>
+
+        <!-- Sección para agregar un nuevo objetivo -->
+        <div id="objective-form">
+            <input type="text" id="objective-name" placeholder="Nombre del objetivo">
+            <button id="add-objective">Agregar Objetivo</button>
+        </div>
+
+        <!-- Sección de objetivos y tareas -->
+        <div id="objectives-container">
+            <!-- Aquí se cargarán dinámicamente los objetivos y tareas -->
+        </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
-
