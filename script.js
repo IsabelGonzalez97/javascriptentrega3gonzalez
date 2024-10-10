@@ -1,8 +1,7 @@
 // Variables globales
 let objectives = [];
-let taskIdCounter = 0;
 
-// Crear una clase para los objetivos
+// Clase para los Objetivos
 class Objective {
     constructor(name) {
         this.name = name;
@@ -21,14 +20,14 @@ class Objective {
     }
 }
 
-// Crear una clase para las tareas
+// Clase para las Tareas
 class Task {
-    constructor(name, priority) {
+    constructor(name, priority, completed = false, timeSpent = 0) {
         this.name = name;
         this.priority = priority;
-        this.completed = false;
+        this.completed = completed;
         this.startTime = null;
-        this.timeSpent = 0;
+        this.timeSpent = timeSpent;
     }
 
     start() {
@@ -41,6 +40,29 @@ class Task {
             this.completed = true;
         }
     }
+}
+
+// Función para cargar los datos desde un archivo JSON usando fetch
+function loadObjectivesFromJson() {
+    fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+            data.objectives.forEach(objectiveData => {
+                const objective = new Objective(objectiveData.name);
+                
+                // Agregar tareas a los objetivos
+                objectiveData.tasks.forEach(taskData => {
+                    const task = new Task(taskData.name, taskData.priority, taskData.completed, taskData.timeSpent);
+                    objective.addTask(task);
+                });
+
+                objectives.push(objective);
+            });
+
+            // Renderizar los objetivos y tareas en la interfaz
+            renderObjectives();
+        })
+        .catch(error => console.error('Error al cargar el archivo JSON:', error));
 }
 
 // Función para crear un nuevo objetivo
@@ -100,6 +122,16 @@ function renderObjectives() {
         title.textContent = objective.name;
         objectiveDiv.appendChild(title);
 
+        // Botón para eliminar el objetivo
+const deleteButton = document.createElement('button');
+deleteButton.textContent = 'Eliminar Objetivo';
+deleteButton.onclick = () => {
+    objectives.splice(objectiveIndex, 1); // Eliminar el objetivo del array
+    renderObjectives(); // Volver a renderizar la lista de objetivos
+};
+objectiveDiv.appendChild(deleteButton);
+
+
         // Botón para agregar tareas
         const taskForm = document.createElement('div');
         taskForm.innerHTML = `
@@ -150,3 +182,8 @@ document.getElementById('add-objective').addEventListener('click', () => {
         document.getElementById('objective-name').value = ''; // Limpiar campo
     }
 });
+
+// Cargar los datos del archivo JSON al iniciar la aplicación
+window.onload = function () {
+    loadObjectivesFromJson();
+};

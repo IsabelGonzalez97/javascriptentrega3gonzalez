@@ -1,43 +1,36 @@
-# Proyecto Final: Lista de tareas 
+# Simulador de Tareas
 
-Este proyecto es una aplicación web interactiva que permite a los usuarios gestionar sus objetivos y tareas diarias. La aplicación permite agregar objetivos, tareas con diferentes niveles de prioridad, y registrar el tiempo dedicado a cada tarea.
+## Descripción
 
-## Características
+El Simulador de Tareas es una aplicación interactiva que permite a los usuarios crear y gestionar objetivos y tareas de manera eficiente. Ofrece funcionalidades para asignar prioridades, registrar el tiempo dedicado a cada tarea y generar resúmenes, todo en una interfaz clara e intuitiva.
 
-- Agregar objetivos y tareas.
-- Clasificar tareas según su prioridad (Urgente, Medio, Bajo).
-- Marcar tareas como completadas y registrar el tiempo dedicado.
-- Ver un resumen de tareas completadas y pendientes.
-- Estilo visual que simula una lista en un cuaderno.
+## Funcionalidades
 
-## Requisitos
+1. **Creación de Objetivos:** Agrega objetivos que actúan como contenedores para tus tareas.
+2. **Añadir Tareas a un Objetivo:** Agrega tareas específicas a cada objetivo con opciones de prioridad (Alta, Media, Baja).
+3. **Prioridades y Colores:** Las tareas se destacan en diferentes colores según su nivel de prioridad.
+4. **Iniciar Tarea:** Comienza una tarea con un clic y registra el tiempo dedicado.
+5. **Confirmar Tarea y Registrar Tiempo:** Al completar una tarea, puedes confirmar el tiempo invertido.
+6. **Eliminar Tareas:** Elimina tareas que ya no son relevantes.
+7. **Resumen de Objetivos:** Obtén un reporte sobre el progreso de tus objetivos y tareas.
+8. **Instrucciones al Usuario:** Guía fácil de usar para interactuar con la aplicación.
 
-- Navegador web moderno.
-- No se requieren dependencias adicionales (solo se usa Lodash).
+## Tecnologías Utilizadas
+
+- HTML
+- CSS
+- JavaScript
+
+## Estructura del Proyecto
+
+- **index.html:** Archivo principal de la aplicación.
+- **script.js:** Lógica de la aplicación y gestión de tareas.
+- **styles.css:** Estilos para la interfaz de usuario.
+- **data.json:** Archivo JSON que almacena datos de tareas (si aplica).
 
 ## Instalación
 
-1. Clona este repositorio o descarga los archivos.
-2. Abre el archivo `index.html` en tu navegador.
+1. Clona el repositorio:
 
-## Uso
-
-- Para agregar un objetivo, escribe en el campo "Agregar objetivo" y haz clic en "Agregar Objetivo".
-- Para agregar tareas a un objetivo, escribe en el campo "Agregar tarea", selecciona la prioridad y haz clic en "Agregar Tarea".
-- Marca una tarea como completada haciendo clic en el botón de verificación y registra el tiempo invertido.
-- Visualiza un resumen de las tareas haciendo clic en el botón "Mostrar Resumen".
-
-## Estructura de Archivos
-
-- `index.html`: Contiene la estructura de la aplicación.
-- `styles.css`: Estilos para la aplicación.
-- `script.js`: Lógica de la aplicación.
-- `data.json`: Archivo JSON que almacena los objetivos y tareas.
-
-## Contribuciones
-
-Si deseas contribuir a este proyecto, no dudes en enviar un pull request.
-
-## Licencia
-
-Este proyecto es de uso personal y educativo.
+   ```bash
+   git clone <URL del repositorio>

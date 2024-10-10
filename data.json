@@ -1,3 +1,22 @@
 {
-    "objectives": []
-}
+    "objectives": [
+      {
+        "name": "Ejemplo Completar proyecto JavaScript",
+        "tasks": [
+          {
+            "name": "Escribir código HTML",
+            "priority": "Alta",
+            "completed": false,
+            "timeSpent": 0
+          },
+          {
+            "name": "Implementar funcionalidad de tareas",
+            "priority": "Media",
+            "completed": false,
+            "timeSpent": 0
+          }
+        ]
+      }
+    ]
+  }
+  
